@@ -26,11 +26,9 @@ class IsQuestion():
     def __get_feature_set(self, posts):
         feature_list = []
         for post in posts:
-            post_text = post.text            
-            features = {}
+            post_text = post.text
             words = nltk.word_tokenize(post_text)
-            for word in words:
-                features['contains({})'.format(word.lower())] = True
+            features = {f'contains({word.lower()})': True for word in words}
             feature_list.append((features, post.get('class')))
         return feature_list
     
@@ -59,18 +57,15 @@ class IsQuestion():
     # Input: Sentence to be predicted
     # Return: 1 - If sentence is question | 0 - If sentence is not question
     def predict_question(self, text):
-        words = nltk.word_tokenize(text.lower())        
+        words = nltk.word_tokenize(text.lower())
         if self.__get_question_words_set().intersection(words) == False:
             return 0
         if '?' in text:
             return 1
-        
-        features = {}
-        for word in words:
-            features['contains({})'.format(word.lower())] = True            
-        
+
+        features = {f'contains({word.lower()})': True for word in words}
         prediction_result = self.classifier.classify(features)
-        if prediction_result == 'whQuestion' or prediction_result == 'ynQuestion':
+        if prediction_result in ['whQuestion', 'ynQuestion']:
             return 1
         return 0
     
@@ -78,11 +73,8 @@ class IsQuestion():
     # Input: Sentence to be predicted
     # Return: 'WH' - If question is WH question | 'YN' - If sentence is Yes/NO question | 'unknown' - If unknown question type
     def predict_question_type(self, text):
-        words = nltk.word_tokenize(text.lower())                
-        features = {}
-        for word in words:
-            features['contains({})'.format(word.lower())] = True            
-        
+        words = nltk.word_tokenize(text.lower())
+        features = {f'contains({word.lower()})': True for word in words}
         prediction_result = self.classifier.classify(features)
         if prediction_result == 'whQuestion':
             return 'WH'

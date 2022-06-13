@@ -21,10 +21,7 @@ class isQuestionBasic():
             'timeout': 1000,
         })
 
-        if ('SQ' or 'SBARQ') in output['sentences'][0]["parse"]:
-            return 1    
-        else:
-            return 0
+        return 1 if ('SQ' or 'SBARQ') in output['sentences'][0]["parse"] else 0
 
 
 isQuestionBasic_obj = isQuestionBasic()
